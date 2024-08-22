@@ -8,8 +8,6 @@ pub struct Solution;
 
 // Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
 
-
-
 // Example 1:
 
 // Input: prices = [7,1,5,3,6,4]
@@ -21,7 +19,6 @@ pub struct Solution;
 // Input: prices = [7,6,4,3,1]
 // Output: 0
 // Explanation: In this case, no transactions are done and the max profit = 0.
-
 
 // Constraints:
 
@@ -42,15 +39,14 @@ impl Solution {
                             (
                                 Some(buy),
                                 Some(current),
-                                if let Some(diff) = diff {
+                                diff.map(|diff| {
                                     if diff < current - buy {
-                                        Some(current - buy)
+                                        current - buy
                                     } else {
-                                        Some(diff)
+                                        diff
                                     }
-                                } else {
-                                    Some(current - buy)
-                                },
+                                })
+                                .or(Some(current - buy)),
                             )
                         }
                     }
@@ -68,15 +64,14 @@ impl Solution {
                             (
                                 Some(buy),
                                 Some(current),
-                                if let Some(diff) = diff {
+                                diff.map(|diff| {
                                     if diff < current - buy {
-                                        Some(current - buy)
+                                        current - buy
                                     } else {
-                                        Some(diff)
+                                        diff
                                     }
-                                } else {
-                                    diff
-                                },
+                                })
+                                .or(Some(current - buy)),
                             )
                         } else {
                             (Some(buy), Some(sell), diff)
