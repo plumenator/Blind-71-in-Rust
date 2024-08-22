@@ -27,7 +27,7 @@ pub struct Solution;
 
 impl Solution {
     pub fn max_profit(prices: Vec<i32>) -> i32 {
-        let (_, diff) = prices
+        prices
             .iter()
             .skip(1)
             .fold((prices[0], 0), |(buy, diff), &current| {
@@ -43,8 +43,9 @@ impl Solution {
                         },
                     )
                 }
-            });
-        diff.max(0)
+            })
+            .1
+            .max(0)
     }
 }
 
