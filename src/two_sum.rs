@@ -6,19 +6,27 @@ pub struct Solution;
 
 // You can return the answer in any order.
 
-use std::collections::HashMap;
-
 impl Solution {
     pub fn two_sum(nums: Vec<i32>, target: i32) -> Vec<i32> {
-        let mut indices: HashMap<i32, usize> = HashMap::new();
-        for (&n, i) in nums.iter().zip(0..nums.len()) {
-            if let Some(&o) = indices.get(&(target - n)) {
-                return vec![o as i32, i as i32];
-            } else {
-                indices.insert(n, i);
+        let mut nums: Vec<_> = nums.iter().copied().zip(0..nums.len()).collect();
+        nums.sort_by_key(|(k, _)| *k);
+        let (mut left, mut right) = (0, nums.len() - 1);
+        loop {
+            use std::cmp::Ordering::*;
+            match (nums[left].0 + nums[right].0).cmp(&target) {
+                Less => {
+                    left += 1;
+                }
+                Greater => {
+                    right -= 1;
+                }
+                Equal => {
+                    let mut res = vec![nums[left].1 as i32, nums[right].1 as i32];
+                    res.sort();
+                    return res;
+                }
             }
         }
-        vec![]
     }
 }
 
