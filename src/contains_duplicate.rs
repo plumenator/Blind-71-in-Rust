@@ -26,15 +26,16 @@ use std::collections::HashSet;
 
 impl Solution {
     pub fn contains_duplicate(nums: Vec<i32>) -> bool {
-        let mut seen = HashSet::<i32>::new();        
+        let mut seen = HashSet::<i32>::new();
+        seen.reserve(nums.len());
         for num in nums {
-          if seen.contains(&num) {
-            return true;
-          } else {
-            seen.insert(num);
-          }
+            if seen.contains(&num) {
+                return true;
+            } else {
+                seen.insert(num);
+            }
         }
-      false
+        false
     }
 }
 
