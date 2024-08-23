@@ -34,15 +34,15 @@ impl Solution {
         let prefix = nums.iter().scan(1, f);
         let mut suffix: Vec<_> = nums.iter().rev().scan(1, f).collect();
         suffix.reverse();
-        suffix.push(1);
-        prefix
-            .zip(suffix.iter().skip(1))
-            .scan(1, |s, (left, right)| {
-                let orig = *s;
-                *s = left;
-                Some(orig * right)
-            })
-            .collect()
+        suffix[0] = suffix[1];
+        for (i, p) in prefix.enumerate() {
+            if i + 2 < nums.len() {
+                suffix[i + 1] = p * suffix[i + 2];
+            } else if i + 1 < nums.len() {
+                suffix[i + 1] = p * 1;
+            }
+        }
+        suffix
     }
 }
 
