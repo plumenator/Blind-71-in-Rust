@@ -22,8 +22,8 @@ pub struct Solution;
 
 // Constraints:
 
-// 1 <= prices.length <= 105
-// 0 <= prices[i] <= 104
+// 1 <= prices.length <= 10^5
+// 0 <= prices[i] <= 10^4
 
 impl Solution {
     pub fn max_profit(prices: Vec<i32>) -> i32 {
