@@ -31,19 +31,18 @@ impl Solution {
             *p = *p * n;
             Some(*p)
         };
-        let prefix: Vec<_> = nums.iter().scan(1, f).collect();
-        let suffix: Vec<_> = nums.iter().rev().scan(1, f).collect();
-        let mut out = Vec::new();
-        for i in 0..nums.len() {
-            let left = if i == 0 { 1 } else { prefix[i - 1] };
-            let right = if i == nums.len() - 1 {
-                1
-            } else {
-                suffix[nums.len() - 1 - (i + 1)]
-            };
-            out.push(left * right);
-        }
-        out
+        let prefix = nums.iter().scan(1, f);
+        let mut suffix: Vec<_> = nums.iter().rev().scan(1, f).collect();
+        suffix.reverse();
+        suffix.push(1);
+        prefix
+            .zip(suffix.iter().skip(1))
+            .scan(1, |s, (left, right)| {
+                let orig = *s;
+                *s = left;
+                Some(orig * right)
+            })
+            .collect()
     }
 }
 
