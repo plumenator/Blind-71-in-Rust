@@ -31,17 +31,15 @@ impl Solution {
             *p = *p * n;
             Some(*p)
         };
-        let prefix = nums.iter().scan(1, f);
+        let mut prefix = nums.iter().scan(1, f);
         let mut suffix: Vec<_> = nums.iter().rev().scan(1, f).collect();
         suffix.reverse();
         suffix[0] = suffix[1];
-        for (i, p) in prefix.enumerate() {
-            if i + 2 < nums.len() {
-                suffix[i + 1] = p * suffix[i + 2];
-            } else if i + 1 < nums.len() {
-                suffix[i + 1] = p * 1;
-            }
+        let last = suffix.len() - 1;
+        for i in 1..last {
+            suffix[i] = prefix.next().unwrap() * suffix[i + 1];
         }
+        suffix[last] = prefix.next().unwrap();
         suffix
     }
 }
