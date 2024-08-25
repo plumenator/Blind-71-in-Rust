@@ -33,14 +33,36 @@ pub struct Solution;
 
 impl Solution {
     pub fn max_sub_array(nums: Vec<i32>) -> i32 {
-        let mut curr_max = nums[0];
-        let mut so_far = nums[0];
-        for num in nums.iter().skip(1) {
-            so_far = if so_far < 0 { *num } else { so_far + *num };
-            curr_max = curr_max.max(so_far);
-        }
-        curr_max
+        max_sub_array_rec(&nums)
     }
+}
+
+fn max_sub_array_rec(
+    nums: &[i32],
+) -> i32 {
+    if nums.len() == 1 {
+        nums[0]
+    } else {
+        let (left, right) = nums.split_at(nums.len() / 2);
+        let lmax = max_sub_array_rec(left);
+        let rmax = max_sub_array_rec(right);
+        let mmax = mid_max(left, right);
+        lmax.max(rmax).max(mmax)
+    }
+}
+
+fn mid_max(left: &[i32], right: &[i32]) -> i32 {
+        let f = |(sum, max), &n| {
+            let update = sum + n;
+            if update > max {
+                (update, update)
+            } else {
+                (update, max)
+            }
+        };
+        let (_, lmax) = left.iter().rev().fold((0, i32::min_value()), f);
+        let (_, rmax) = right.iter().fold((0, i32::min_value()), f);
+        lmax + rmax
 }
 
 #[cfg(test)]
