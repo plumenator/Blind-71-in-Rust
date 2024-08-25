@@ -1,6 +1,5 @@
-pub struct Solution;
+// https://leetcode.com/problems/best-time-to-buy-and-sell-stock
 
-// https://leetcode.com/problems/best-time-to-buy-and-sell-stock/description/
 // 121. Best Time to Buy and Sell Stock
 // You are given an array prices where prices[i] is the price of a given stock on the ith day.
 
@@ -24,6 +23,8 @@ pub struct Solution;
 
 // 1 <= prices.length <= 10^5
 // 0 <= prices[i] <= 10^4
+
+pub struct Solution;
 
 impl Solution {
     pub fn max_profit(prices: Vec<i32>) -> i32 {
