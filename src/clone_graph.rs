@@ -13,7 +13,6 @@
 //     public List<Node> neighbors;
 // }
 
-
 // Test case format:
 
 // For simplicity, each node's value is the same as the node's index (1-indexed). For example, the first node with val == 1, the second node with val == 2, and so on. The graph is represented in the test case using an adjacency list.
@@ -22,10 +21,7 @@
 
 // The given node will always be the first node with val = 1. You must return the copy of the given node as a reference to the cloned graph.
 
-
-
 // Example 1:
-
 
 // Input: adjList = [[2,4],[1,3],[2,4],[1,3]]
 // Output: [[2,4],[1,3],[2,4],[1,3]]
@@ -36,7 +32,6 @@
 // 4th node (val = 4)'s neighbors are 1st node (val = 1) and 3rd node (val = 3).
 // Example 2:
 
-
 // Input: adjList = [[]]
 // Output: [[]]
 // Explanation: Note that the input contains one empty list. The graph consists of only one node with val = 1 and it does not have any neighbors.
@@ -45,7 +40,6 @@
 // Input: adjList = []
 // Output: []
 // Explanation: This an empty graph, it does not have any nodes.
-
 
 // Constraints:
 
@@ -58,30 +52,40 @@
 use std::collections::HashMap;
 use std::ptr;
 
-struct Node {
+pub struct Node {
     pub val: i32,
-    pub neighbors: Vec<*mut Node>,
+    pub neighbors: Vec<*const Node>,
 }
 
 pub struct Solution {
-  visited: HashMap<i32, *mut Node>,
+    visited: HashMap<i32, *mut Node>,
 }
 
 impl Solution {
-    pub fn clone_graph(&mut self, node: *mut Node) -> *mut Node {
-        if node == ptr::null_mut() {
+    pub fn clone_graph(&mut self, node: *const Node) -> *mut Node {
+        if node.is_null() {
             return ptr::null_mut();
         }
-        // if (auto visitedIt = visited.find(node->val); visitedIt != visited.end()) {
-        //     return visitedIt->second;
-        // }
-        // auto* copy = new Node(node->val);
-        // visited.emplace(node->val, copy);
-        // for (auto n: node->neighbors) {
-        //     if (auto clone = cloneGraph(n); clone) {
-        //         copy->neighbors.push_back(clone);
-        //     }
-        // }
-        return ptr::null_mut();
+        unsafe {
+            let val = (*node).val;
+            if let Some(v) = self.visited.get(&val) {
+                return *v;
+            }
+            let copy = Box::new(Node {
+                val,
+                neighbors: vec![],
+            });
+            let copy = Box::into_raw(copy);
+            self.visited.insert(val, copy);
+            let neighbors = &(*node).neighbors;
+            let copy_neighbors = &mut (*copy).neighbors;
+            for n in neighbors {
+                let clone = self.clone_graph(*n);
+                if !clone.is_null() {
+                    copy_neighbors.push(clone);
+                }
+            }
+        }
+        ptr::null_mut()
     }
 }
