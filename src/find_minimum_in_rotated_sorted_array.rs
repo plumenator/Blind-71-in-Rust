@@ -42,13 +42,15 @@ pub struct Solution;
 
 impl Solution {
     pub fn find_min(nums: Vec<i32>) -> i32 {
-        for i in 0..nums.len() {
-            let prev = (i + nums.len() - 1) % nums.len();
-            let next = (i + 1) % nums.len();
-            if (nums[prev] - nums[i]).signum() != (nums[i] - nums[next]).signum() {
-                return nums[i].min(nums[next]).min(nums[prev]);
-            }
-        }
+        find_min_rec(&nums)
+    }
+}
+
+fn find_min_rec(nums: &[i32]) -> i32 {
+    if nums[0] > nums[nums.len() - 1] {
+        let mid = nums.len() / 2;
+        find_min_rec(&nums[0..mid]).min(find_min_rec(&nums[mid..nums.len()]))
+    } else {
         nums[0]
     }
 }
