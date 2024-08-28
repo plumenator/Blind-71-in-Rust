@@ -42,16 +42,25 @@ pub struct Solution;
 
 impl Solution {
     pub fn find_min(nums: Vec<i32>) -> i32 {
-        find_min_rec(&nums)
-    }
-}
-
-fn find_min_rec(nums: &[i32]) -> i32 {
-    if nums[0] > nums[nums.len() - 1] {
-        let mid = nums.len() / 2;
-        find_min_rec(&nums[0..mid]).min(find_min_rec(&nums[mid..nums.len()]))
-    } else {
-        nums[0]
+        let mut begin = 0;
+        let mut end = nums.len() - 1;
+        while begin != end {
+            if nums[begin] < nums[end] {
+                // already sorted
+                return nums[begin];
+            }
+            let mid = (begin + end) / 2;
+            if nums[begin] < nums[mid] {
+                begin = mid + 1;
+            } else if nums[mid] < nums[end] {
+                // we want to include mid, so not mid - 1
+                end = mid;
+            } else {
+                // reverse sorted
+                return nums[end];
+            }
+        }
+        nums[begin]
     }
 }
 
@@ -69,5 +78,19 @@ mod tests {
     #[test]
     fn ex3() {
         assert_eq!(Solution::find_min(vec![11, 13, 15, 17]), 11)
+    }
+
+    #[test]
+    fn ex4() {
+        assert_eq!(Solution::find_min(vec![2, 1]), 1)
+    }
+
+    #[test]
+    fn ex5() {
+        assert_eq!(Solution::find_min(vec![1]), 1)
+    }
+    #[test]
+    fn ex6() {
+        assert_eq!(Solution::find_min(vec![3, 1, 2]), 1)
     }
 }
