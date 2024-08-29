@@ -44,15 +44,23 @@ impl Solution {
     pub fn find_min(nums: Vec<i32>) -> i32 {
         let mut begin = 0;
         let mut end = nums.len() - 1;
-        while begin + 1 < end {
+        while begin != end {
+            if nums[begin] < nums[end] {
+              // already sorted
+                return nums[begin];
+            } 
             let mid = (begin + end) / 2;
-            if nums[begin] > nums[end] && nums[mid] > nums[end] {
-                begin = mid;
-            } else {
+            if nums[begin] < nums[mid] {
+                begin = mid + 1;
+            } else if nums[mid] < nums[end] {
+              // we want to include mid, so not mid - 1
                 end = mid;
+            } else {
+              // reverse sorted
+              return nums[end];
             }
         }
-        nums[begin].min(nums[end])
+        nums[begin]
     }
 }
 

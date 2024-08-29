@@ -49,12 +49,112 @@
 // There are no repeated edges and no self-loops in the graph.
 // The Graph is connected and all nodes can be visited starting from the given node.
 
+// C++ solution
+
+// /*
+// // Definition for a Node.
+// class Node {
+// public:
+//     int val;
+//     vector<Node*> neighbors;
+//     Node() {
+//         val = 0;
+//         neighbors = vector<Node*>();
+//     }
+//     Node(int _val) {
+//         val = _val;
+//         neighbors = vector<Node*>();
+//     }
+//     Node(int _val, vector<Node*> _neighbors) {
+//         val = _val;
+//         neighbors = _neighbors;
+//     }
+// };
+// */
+// #include<unordered_map>
+// #include<iostream>
+
+// class Solution {
+//     std::unordered_map<int, Node*> visited;
+
+// public:
+//     Node* cloneGraph(Node* node) {
+//         static int count = 0;
+//         if (!node) {
+//             return nullptr;
+//         }
+//         if (auto visitedIt = visited.find(node->val); visitedIt != visited.end()) {
+//             return visitedIt->second;
+//         }
+//         auto* copy = new Node(node->val);
+//         visited.emplace(node->val, copy);
+//         for (auto n: node->neighbors) {
+//             if (auto clone = cloneGraph(n); clone) {
+//                 copy->neighbors.push_back(clone);
+//             }
+//         }
+//         return copy;
+//     }
+// };
+
 use std::collections::HashMap;
 use std::ptr;
 
 pub struct Node {
     pub val: i32,
     pub neighbors: Vec<*const Node>,
+}
+
+pub struct Problem {
+    visited: HashMap<i32, *mut Node>,
+}
+
+impl Problem {
+    pub fn create_graph(&mut self, adj_list: Vec<Vec<i32>>) -> *mut Node {
+        for (val, neighbors) in adj_list.into_iter().enumerate() {
+            let val = (val + 1) as i32;
+            let node = self.mk_node(val);
+            for nval in neighbors {
+                let neighbor = self.mk_node(nval);
+                unsafe {
+                    (*node).neighbors.push(neighbor);
+                }
+                self.visited.insert(nval, neighbor);
+            }
+        }
+        if self.visited.is_empty() {
+            ptr::null_mut()
+        } else {
+            self.visited[&1]
+        }
+    }
+
+    fn mk_node(&self, val: i32) -> *mut Node {
+        if let Some(n) = self.visited.get(&val) {
+            *n
+        } else {
+            let n = Box::new(Node {
+                val,
+                neighbors: vec![],
+            });
+            Box::into_raw(n)
+        }
+    }
+
+    pub fn equal(&self, other: *const Node) -> bool {
+        if other.is_null() {
+            return true;
+        }
+        unsafe {
+            let val = (*other).val;
+            if self.visited.contains_key(&val) {
+                let neighbors = &(*other).neighbors;
+                neighbors.iter().all(|n| self.equal(*n))
+            } else {
+                false
+            }
+        }
+    }
 }
 
 pub struct Solution {
@@ -87,5 +187,87 @@ impl Solution {
             }
         }
         ptr::null_mut()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn ex1() {
+        let mut problem = Problem {
+            visited: Default::default(),
+        };
+        let node = problem.create_graph(vec![vec![2, 4], vec![1, 3], vec![2, 4], vec![1, 3]]);
+        let clone = Solution {
+            visited: Default::default(),
+        }
+        .clone_graph(node);
+        assert!(problem.equal(clone))
+    }
+
+    #[test]
+    fn ex2() {
+        let mut problem = Problem {
+            visited: Default::default(),
+        };
+        let node = problem.create_graph(vec![vec![]]);
+        let clone = Solution {
+            visited: Default::default(),
+        }
+        .clone_graph(node);
+        assert!(problem.equal(clone))
+    }
+
+    #[test]
+    fn ex3() {
+        let mut problem = Problem {
+            visited: Default::default(),
+        };
+        let node = problem.create_graph(vec![]);
+        let clone = Solution {
+            visited: Default::default(),
+        }
+        .clone_graph(node);
+        assert!(problem.equal(clone))
+    }
+
+    #[test]
+    fn ex4() {
+        let mut problem = Problem {
+            visited: Default::default(),
+        };
+        let node = problem.create_graph(vec![
+            vec![2, 3, 4],
+            vec![1, 3, 4],
+            vec![1, 2, 4],
+            vec![1, 2, 3],
+        ]);
+        let clone = Solution {
+            visited: Default::default(),
+        }
+        .clone_graph(node);
+        assert!(problem.equal(clone))
+    }
+
+    #[test]
+    fn ex5() {
+        let mut problem = Problem {
+            visited: Default::default(),
+        };
+        let node = problem.create_graph(vec![
+            vec![2, 3, 4, 5, 6],
+            vec![1, 3, 4, 5, 6],
+            vec![1, 2, 4, 5, 6],
+            vec![1, 2, 3, 5, 6],
+            vec![1, 2, 3, 4, 6],
+            vec![1, 2, 3, 4, 5],
+        ]);
+        let clone = Solution {
+            visited: Default::default(),
+        }
+        .clone_graph(node);
+        assert!(problem.equal(clone))
     }
 }
