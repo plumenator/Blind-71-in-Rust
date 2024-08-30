@@ -53,7 +53,7 @@ impl Solution {
             if nums[begin] < nums[mid] {
                 begin = mid + 1;
             } else if nums[mid] < nums[end] {
-              // we want to include mid, so not mid - 1
+              // we want to include mid, so not mid -
                 end = mid;
             } else {
               // reverse sorted
