@@ -37,9 +37,7 @@ impl Solution {
     }
 }
 
-fn max_sub_array_rec(
-    nums: &[i32],
-) -> i32 {
+fn max_sub_array_rec(nums: &[i32]) -> i32 {
     if nums.len() == 1 {
         nums[0]
     } else {
@@ -52,17 +50,17 @@ fn max_sub_array_rec(
 }
 
 fn mid_max(left: &[i32], right: &[i32]) -> i32 {
-        let f = |(sum, max), &n| {
-            let update = sum + n;
-            if update > max {
-                (update, update)
-            } else {
-                (update, max)
-            }
-        };
-        let (_, lmax) = left.iter().rev().fold((0, i32::min_value()), f);
-        let (_, rmax) = right.iter().fold((0, i32::min_value()), f);
-        lmax + rmax
+    let f = |(sum, max), &n| {
+        let update = sum + n;
+        if update > max {
+            (update, update)
+        } else {
+            (update, max)
+        }
+    };
+    let (_, lmax) = left.iter().rev().fold((0, i32::min_value()), f);
+    let (_, rmax) = right.iter().fold((0, i32::min_value()), f);
+    lmax + rmax
 }
 
 #[cfg(test)]

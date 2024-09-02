@@ -46,18 +46,18 @@ impl Solution {
         let mut end = nums.len() - 1;
         while begin != end {
             if nums[begin] < nums[end] {
-              // already sorted
+                // already sorted
                 return nums[begin];
-            } 
+            }
             let mid = (begin + end) / 2;
             if nums[begin] < nums[mid] {
                 begin = mid + 1;
             } else if nums[mid] < nums[end] {
-              // we want to include mid, so not mid - 1
+                // we want to include mid, so not mid - 1
                 end = mid;
             } else {
-              // reverse sorted
-              return nums[end];
+                // reverse sorted
+                return nums[end];
             }
         }
         nums[begin]
